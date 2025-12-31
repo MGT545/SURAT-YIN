@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surat Untuk YIN👻 💌</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('cinnamoroll.png') no-repeat center center;
+    background-size: cover;
+    color: #0a3d62;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    overflow-x: hidden;
+}
+/* Nama YIN👻 + Cinnamoroll kecil */
+.name-container {
+    display: flex;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff6b6b;
+    margin-top: 20px;
+    animation: glow 1.5s infinite alternate;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+.name-container img {
+    width: 60px;
+    height: 60px;
+    margin-left: 10px;
+    animation: float 2s infinite ease-in-out;
+}
+@keyframes glow {
+    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff6b6b; }
+    50% { text-shadow: 0 0 15px #fff, 0 0 25px #ff6b6b; }
+    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff6b6b; }
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+/* Cover surat sebelum dibuka */
+#coverLetter {
+    width: 300px;
+    height: 200px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+}
+#coverLetter:hover { transform: scale(1.05); }
+/* Surat terbuka horizontal + efek melengkung */
+#letter {
+    width: 600px;
+    max-width: 90%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px 40px;
+    margin-top: 20px;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transform-origin: top;
+    transform: perspective(1000px) rotateX(-90deg) scaleY(0);
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
+#letter.open {
+    transform: perspective(1000px) rotateX(0deg) scaleY(1);
+    opacity: 1;
+}
+/* Text typing effect */
+#mainText {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    text-align: left;
+    white-space: normal;
+}
+/* Buttons */
+.buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+.buttons.show { opacity: 1; }
+.buttons button {
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.buttons button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.5s;
+}
+.buttons button:hover::before { left: 0; }
+#option1 { background-color: #ff6b6b; }
+#option2 { background-color: #feca57; color: #fff; }
+#option3 { background-color: #1dd1a1; }
+/* Jawapan */
+#answerText {
+    margin-top: 30px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #2f3640;
+}
+</style>
+</head>
+<body>
+
+<div class="name-container" id="name">
+    YIN👻 <img src="cinnamoroll_small.png" alt="Cinnamoroll kecil">
+</div>
+
+<div id="coverLetter">📩 Klik untuk buka surat</div>
+
+<div id="letter">
+    <div id="mainText"></div>
+    <div class="buttons" id="buttonContainer">
+        <button id="option1">NAK 😍</button>
+        <button id="option2">MALU TAPI NAK 😏</button>
+        <button id="option3">TAK NAK ☹️</button>
+    </div>
+    <div id="answerText"></div>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="slow-music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Password Gate
+function checkPassword() {
+    let pwd = prompt("Masukkan password untuk buka surat 💌:");
+    if(!pwd) { alert("Sila masukkan password."); location.reload(); }
+    else {
+        pwd = pwd.toLowerCase();
+        if(pwd === "megat roroche" || pwd === "amani") { showCover(); }
+        else { alert("Password salah! Sila cuba lagi."); location.reload(); }
+    }
+}
+checkPassword();
+
+// Show cover
+function showCover(){
+    const cover = document.getElementById('coverLetter');
+    cover.style.display = 'flex';
+    cover.addEventListener('click', openLetter);
+}
+
+// Buka surat + typing effect slow + animasi melengkung
+function openLetter(){
+    document.getElementById('coverLetter').style.display = 'none';
+    const letter = document.getElementById('letter');
+    const nameEl = document.getElementById('name');
+    nameEl.style.opacity = 1;
+
+    // Surat buka perlahan dengan lengkung
+    setTimeout(()=>{ letter.classList.add('open'); }, 50);
+
+    const mainTextContent = `Yin,aku buat camni sbb nk nmpk unik and spesial je tpi tu bukn main point aku.
+
+Ni pointnya,aku tau hng suka aku sejak tahun lepas tpi tulah bak kata hng aku buta, yee aku agak ngaku disitu HAHAHAHA
+tpi bukan aku tknk confess,aku sebenarnya tunggu masa tpi terlambat sudahh.lgipun hng anggap aku mcm abng wktu tu so aku ingat tkde harapan.
+
+Tpi tkpe, dan aku sebenarnya agak rasa bersalah lps hng break dngn BLDT tu sampai hng nangis ann.Walaupun aku suka usik hng tpi 
+tu aku saja gurau sbb aku suka tngk hng merajukk HEHEHEHE.
+
+Ni mungkin hng dngr or tngk ni agak cringe tpi aku harap hng jwb seikhlas hati hng,aku tau hng ragu ii nk wat
+keputusan kn?sbb hng risau aku jdi mcm ha tau ii lh kan,tpi orng kata belum cuba belum tau,tutup buka lama, 
+buka buku baru anjayy HAHAHAHAHA.
+
+Anyway,back to the topik kalau lh aku confess awal ii hng tkde lah jadi camtu.
+But the past is past, so ckp panjang lebar ni tk dak guna gak. Aku just nk tau and aku nk
+hng jujur:
+"WILL YOU BE MY GIRLFRIEND?"`;
+
+    let i = 0;
+    const textEl = document.getElementById('mainText');
+    function typeEffect() {
+        if(i < mainTextContent.length){
+            const char = mainTextContent[i];
+            if(char === "\n" || char === "\r") textEl.innerHTML += "<br>";
+            else textEl.innerHTML += char;
+            i++;
+            setTimeout(typeEffect, 120); // slow typing
+        } else {
+            document.getElementById('buttonContainer').classList.add('show');
+        }
+    }
+    // Delay typing supaya surat buka dulu
+    setTimeout(typeEffect, 1000);
+
+    // Audio autoplay
+    const bgMusic = document.getElementById('bgMusic');
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if(isTouchDevice){
+        function startAudio(){ bgMusic.play(); document.removeEventListener('touchstart', startAudio);}
+        document.addEventListener('touchstart', startAudio);
+    } else { bgMusic.play().catch(()=>console.log('Audio autoplay blocked')); }
+}
+
+// Button jawapan
+const answers = {
+    option1: "AKU DAH KATO DAH 😍",
+    option2: "ELELELE MALU PULAK DIE 😏",
+    option3: "HURMMM MAJUKK ☹️"
+};
+document.getElementById('option1').addEventListener('click', ()=>{ document.getElementById('answerText').innerText = answers.option1; });
+document.getElementById('option2').addEventListener('click', ()=>{ document.getElementById('answerText').innerText = answers.option2; });
+document.getElementById('option3').addEventListener('click', ()=>{ document.getElementById('answerText').innerText = answers.option3; });
+</script>
+</body>
+</html>
